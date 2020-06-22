@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panel readonly="readonly">
+  <v-expansion-panel>
     <v-expansion-panel-header class="justify-space-between flex-wrap">
       <OnlineIndicator class="flex-grow-0 pr-4" :online-status="status.isOnline"></OnlineIndicator>
       <h4>{{name}}</h4>
@@ -9,16 +9,20 @@
       </v-chip>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
+      <v-lazy>
+      <ServerDetail :server-id="id"></ServerDetail>
+      </v-lazy>
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>
 
 <script>
 import OnlineIndicator from './OnlineIndicator.vue';
+import ServerDetail from './ServerDetail.vue';
 
 export default {
   name: 'Server',
-  components: { OnlineIndicator },
+  components: { ServerDetail, OnlineIndicator },
   props: {
     id: {
       type: String,
