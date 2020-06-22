@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panel>
+  <v-expansion-panel :disabled="hideServerInfo">
     <v-expansion-panel-header class="justify-space-between flex-wrap">
       <OnlineIndicator class="flex-grow-0 pr-4" :online-status="status.isOnline"></OnlineIndicator>
       <h4>{{name}}</h4>
@@ -41,14 +41,17 @@ export default {
     status: {},
   },
   computed: {
+    hideServerInfo() {
+      return this.status?.isOnline === false;
+    },
     playerCount() {
       let current = this.status?.onlinePlayerCount;
       let max = this.status?.maxPlayerCount;
       if (current == null) {
-        current = 0;
+        current = '-';
       }
       if (max == null) {
-        max = 0;
+        max = '-';
       }
       return {
         current,
