@@ -1,13 +1,37 @@
 <template>
   <div>
+
     <v-progress-circular indeterminate v-show="$apollo.loading && mcServer == null">
     </v-progress-circular>
     <v-alert  type="error" v-show="!$apollo.loading && mcServer == null">
       Error while loading server data. Reload page to try again.
     </v-alert>
     <div v-if="mcServer">
-      {{mcServer.name}}
-      {{mcServer.publicAddress}}
+      <v-list>
+        <v-list-item-group>
+          <v-list-item>
+            <v-list-item-icon><v-icon>mdi-controller-classic</v-icon></v-list-item-icon>
+            <v-list-item-content>
+              <b>Address:</b>
+              {{mcServer.publicAddress}}
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-icon><v-icon>mdi-account-multiple</v-icon></v-list-item-icon>
+            <v-list-item-content>
+              <b>Players:</b>
+              {{onlinePlayerList}}
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-icon><v-icon>mdi-clock</v-icon></v-list-item-icon>
+            <v-list-item-content>
+              <b>Last updated</b>
+              {{updatedLabel}}
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
     </div>
 
   </div>
@@ -15,6 +39,7 @@
 
 <script>
 import gql from 'graphql-tag';
+import moment from 'moment';
 
 export default {
   name: 'ServerDetail',
@@ -27,6 +52,35 @@ export default {
   data: () => ({
     mcServer: null,
   }),
+  computed: {
+    updatedLabel() {
+      if (!this.queryTime) {
+        return 'Loading';
+      }
+      return moment(this.queryTime).fromNow();
+    },
+    queryTime() {
+      if (!this.mcServer?.status?.queryTime) {
+        return null;
+      }
+      try {
+        return new Date(Number.parseInt(this.mcServer.status.queryTime, 10));
+      } catch (error) {
+        return null;
+      }
+    },
+    onlinePlayerList() {
+      if (!this.mcServer?.status?.onlinePlayers?.length) {
+        return 'No online players';
+      }
+      return this.mcServer.status.onlinePlayers.reduce((acc, player) => {
+        if (!acc) {
+          return player.name;
+        }
+        return `${acc}, ${player.name}`;
+      }, '');
+    },
+  },
   apollo: {
     mcServer: {
       query: gql`query mcServer($serverId: String!) {
@@ -40,6 +94,9 @@ export default {
             onlinePlayerCount
             maxPlayerCount
             queryTime
+            onlinePlayers {
+                name,
+            }
           }
         }
     }`,
