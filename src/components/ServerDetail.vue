@@ -9,7 +9,7 @@
     <div v-if="mcServer">
       <v-list>
         <v-list-item-group>
-          <v-list-item>
+          <v-list-item @click="copyServerAddress">
             <v-list-item-icon><v-icon>mdi-controller-classic-outline</v-icon></v-list-item-icon>
             <v-list-item-content>
               <b>Address:</b>
@@ -60,6 +60,15 @@ export default {
   data: () => ({
     mcServer: null,
   }),
+  methods: {
+    copyServerAddress() {
+      if (!navigator.clipboard?.writeText) {
+        console.warn('Cannot copy server address to clipboard, browser does not support it.');
+        return;
+      }
+      navigator.clipboard.writeText(this.mcServer.publicAddress);
+    },
+  },
   computed: {
     updatedLabel() {
       if (!this.queryTime) {
