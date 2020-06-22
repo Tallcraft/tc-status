@@ -12,14 +12,14 @@
           <v-list-item @click="copyServerAddress">
             <v-list-item-icon><v-icon>mdi-controller-classic-outline</v-icon></v-list-item-icon>
             <v-list-item-content>
-              <b>Address:</b>
+              <b>Address</b>
               {{mcServer.publicAddress}}
             </v-list-item-content>
           </v-list-item>
           <v-list-item>
             <v-list-item-icon><v-icon>mdi-information-outline</v-icon></v-list-item-icon>
             <v-list-item-content>
-              <b>Version:</b>
+              <b>Version</b>
               {{mcServer.version}}
             </v-list-item-content>
           </v-list-item>
@@ -27,7 +27,7 @@
           <v-list-item v-if="serverId !== '(global)'">
             <v-list-item-icon><v-icon>mdi-account-multiple-outline</v-icon></v-list-item-icon>
             <v-list-item-content>
-              <b>Players:</b>
+              <b>Players</b>
               {{onlinePlayerList}}
             </v-list-item-content>
           </v-list-item>
