@@ -23,7 +23,8 @@
               {{mcServer.version}}
             </v-list-item-content>
           </v-list-item>
-          <v-list-item>
+          <!-- TODO: remove serverId exception once API bug is fixed -->
+          <v-list-item v-if="serverId !== '(global)'">
             <v-list-item-icon><v-icon>mdi-account-multiple-outline</v-icon></v-list-item-icon>
             <v-list-item-content>
               <b>Players:</b>
