@@ -28,13 +28,10 @@ export default {
         mcServers{
           id
           name
-          version
-          publicAddress
           status {
             isOnline
             onlinePlayerCount
             maxPlayerCount
-            queryTime
           }
         }
     }`,
