@@ -10,21 +10,28 @@
       <v-list>
         <v-list-item-group>
           <v-list-item>
-            <v-list-item-icon><v-icon>mdi-controller-classic</v-icon></v-list-item-icon>
+            <v-list-item-icon><v-icon>mdi-controller-classic-outline</v-icon></v-list-item-icon>
             <v-list-item-content>
               <b>Address:</b>
               {{mcServer.publicAddress}}
             </v-list-item-content>
           </v-list-item>
           <v-list-item>
-            <v-list-item-icon><v-icon>mdi-account-multiple</v-icon></v-list-item-icon>
+            <v-list-item-icon><v-icon>mdi-information-outline</v-icon></v-list-item-icon>
+            <v-list-item-content>
+              <b>Version:</b>
+              {{mcServer.version}}
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-icon><v-icon>mdi-account-multiple-outline</v-icon></v-list-item-icon>
             <v-list-item-content>
               <b>Players:</b>
               {{onlinePlayerList}}
             </v-list-item-content>
           </v-list-item>
           <v-list-item>
-            <v-list-item-icon><v-icon>mdi-clock</v-icon></v-list-item-icon>
+            <v-list-item-icon><v-icon>mdi-clock-outline</v-icon></v-list-item-icon>
             <v-list-item-content>
               <b>Last updated</b>
               {{updatedLabel}}
@@ -85,8 +92,6 @@ export default {
     mcServer: {
       query: gql`query mcServer($serverId: String!) {
         mcServer(serverId: $serverId) {
-          id
-          name
           version
           publicAddress
           status {
