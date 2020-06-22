@@ -40,7 +40,7 @@ export default {
     }`,
       errorPolicy: 'all',
       // TODO: make poll interval dependent on api refresh rate.
-      pollInterval: 1000, // Refresh every 5 minutes
+      pollInterval: 5 * 60 * 1000, // Refresh every 5 minutes
     },
   },
 };
