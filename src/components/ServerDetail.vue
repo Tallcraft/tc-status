@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <v-progress-circular indeterminate v-show="$apollo.loading && mcServer == null">
     </v-progress-circular>
     <v-alert  type="error" v-show="!$apollo.loading && mcServer == null">
@@ -31,26 +30,28 @@
               {{onlinePlayerList}}
             </v-list-item-content>
           </v-list-item>
-          <v-list-item>
+          <v-list-item v-if="showLastUpdatedLabel">
             <v-list-item-icon><v-icon>mdi-clock-outline</v-icon></v-list-item-icon>
             <v-list-item-content>
               <b>Last updated</b>
-              {{updatedLabel}}
+              <RelativeTimeLabel
+                :timestamp="this.mcServer.status.queryTime"
+              ></RelativeTimeLabel>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
       </v-list>
     </div>
-
   </div>
 </template>
 
 <script>
 import gql from 'graphql-tag';
-import moment from 'moment';
+import RelativeTimeLabel from './RelativeTimeLabel.vue';
 
 export default {
   name: 'ServerDetail',
+  components: { RelativeTimeLabel },
   props: {
     serverId: {
       type: String,
@@ -59,13 +60,7 @@ export default {
   },
   data: () => ({
     mcServer: null,
-    currentTime: new Date(),
   }),
-  beforeMount() {
-    setInterval(() => {
-      this.currentTime = new Date();
-    }, 5000);
-  },
   methods: {
     copyServerAddress() {
       if (!navigator.clipboard?.writeText) {
@@ -76,21 +71,8 @@ export default {
     },
   },
   computed: {
-    updatedLabel() {
-      if (!this.queryTime) {
-        return 'Loading';
-      }
-      return moment(this.queryTime).from(this.currentTime);
-    },
-    queryTime() {
-      if (!this.mcServer?.status?.queryTime) {
-        return null;
-      }
-      try {
-        return new Date(Number.parseInt(this.mcServer.status.queryTime, 10));
-      } catch (error) {
-        return null;
-      }
+    showLastUpdatedLabel() {
+      return this.mcServer?.status?.queryTime;
     },
     // TODO: We should return null and hide the player counter if the onlinePlayers field is null.
     onlinePlayerList() {
