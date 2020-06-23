@@ -59,7 +59,13 @@ export default {
   },
   data: () => ({
     mcServer: null,
+    currentTime: new Date(),
   }),
+  beforeMount() {
+    setInterval(() => {
+      this.currentTime = new Date();
+    }, 5000);
+  },
   methods: {
     copyServerAddress() {
       if (!navigator.clipboard?.writeText) {
@@ -74,7 +80,7 @@ export default {
       if (!this.queryTime) {
         return 'Loading';
       }
-      return moment(this.queryTime).fromNow();
+      return moment(this.queryTime).from(this.currentTime);
     },
     queryTime() {
       if (!this.mcServer?.status?.queryTime) {
