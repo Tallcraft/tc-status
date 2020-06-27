@@ -1,66 +1,63 @@
 <template>
   <div>
-    <v-progress-circular indeterminate v-show="$apollo.loading && mcServer == null">
-    </v-progress-circular>
-    <v-alert  type="error" v-show="!$apollo.loading && mcServer == null">
-      Error while loading server data. Reload page to try again.
-    </v-alert>
-    <div v-if="mcServer">
-      <v-list>
-        <v-list-item-group>
-          <v-list-item @click="copyServerAddress">
-            <v-list-item-icon><v-icon>mdi-controller-classic-outline</v-icon></v-list-item-icon>
-            <v-list-item-content>
-              <b>Address</b>
-              {{mcServer.publicAddress}}
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-icon><v-icon>mdi-information-outline</v-icon></v-list-item-icon>
-            <v-list-item-content>
-              <b>Version</b>
-              {{mcServer.version}}
-            </v-list-item-content>
-          </v-list-item>
-          <!-- TODO: remove serverId exception once API bug is fixed -->
-          <v-list-item v-if="serverId !== 'global'">
-            <v-list-item-icon><v-icon>mdi-account-multiple-outline</v-icon></v-list-item-icon>
-            <v-list-item-content>
-              <b>Players</b>
-              {{onlinePlayerList}}
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item v-if="showLastUpdatedLabel">
-            <v-list-item-icon><v-icon>mdi-clock-outline</v-icon></v-list-item-icon>
-            <v-list-item-content>
-              <b>Last updated</b>
-              <RelativeTimeLabel
-                :timestamp="this.mcServer.status.queryTime"
-              ></RelativeTimeLabel>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </div>
+    <v-list>
+      <v-list-item-group>
+        <v-list-item @click="copyServerAddress">
+          <v-list-item-icon>
+            <v-icon>mdi-controller-classic-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <b>Address</b>
+            {{mcServer.publicAddress}}
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdi-information-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <b>Version</b>
+            {{mcServer.version}}
+          </v-list-item-content>
+        </v-list-item>
+        <!-- TODO: remove serverId exception once API bug is fixed -->
+        <v-list-item v-if="mcServer.id !== 'global'">
+          <v-list-item-icon>
+            <v-icon>mdi-account-multiple-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <b>Players</b>
+            {{onlinePlayerList}}
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="showLastUpdatedLabel">
+          <v-list-item-icon>
+            <v-icon>mdi-clock-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <b>Last updated</b>
+            <RelativeTimeLabel
+              :timestamp="this.mcServer.status.queryTime"
+            ></RelativeTimeLabel>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
   </div>
 </template>
 
 <script>
-import gql from 'graphql-tag';
 import RelativeTimeLabel from './RelativeTimeLabel.vue';
 
 export default {
   name: 'ServerDetail',
   components: { RelativeTimeLabel },
   props: {
-    serverId: {
-      type: String,
+    mcServer: {
+      type: Object,
       required: true,
     },
   },
-  data: () => ({
-    mcServer: null,
-  }),
   methods: {
     copyServerAddress() {
       if (!navigator.clipboard?.writeText) {
@@ -85,33 +82,6 @@ export default {
         }
         return `${acc}, ${player.name}`;
       }, '');
-    },
-  },
-  apollo: {
-    mcServer: {
-      query: gql`query mcServer($serverId: String!) {
-        mcServer(serverId: $serverId) {
-          version
-          publicAddress
-          status {
-            isOnline
-            onlinePlayerCount
-            maxPlayerCount
-            queryTime
-            onlinePlayers {
-                name,
-            }
-          }
-        }
-    }`,
-      variables() {
-        return {
-          serverId: this.serverId,
-        };
-      },
-      errorPolicy: 'all',
-      // TODO: make poll interval dependent on api refresh rate.
-      pollInterval: 5 * 60 * 1000, // Refresh every 5 minutes
     },
   },
 };

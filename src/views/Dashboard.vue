@@ -4,7 +4,9 @@
       <v-card id="dash" :loading="$apollo.loading" style="width: 100%">
         <v-card-title>Tallcraft Servers</v-card-title>
         <v-card-text>
-          <v-alert  type="error" v-show="!$apollo.loading && mcServers == null">Error while fetching data. Reload page to try again.</v-alert>
+          <v-alert type="error" v-show="!$apollo.loading && mcServers == null">Error while fetching
+            data. Reload page to try again.
+          </v-alert>
           <ServerList v-if="mcServers" :servers="mcServers"></ServerList>
         </v-card-text>
       </v-card>
@@ -25,19 +27,37 @@ export default {
   apollo: {
     mcServers: {
       query: gql`query {
-        mcServers{
+        mcServers {
           id
           name
+          publicAddress
+          version
+          statusPollInterval
           status {
             isOnline
             onlinePlayerCount
             maxPlayerCount
+            queryTime
+            onlinePlayers {
+              name
+            }
           }
         }
-    }`,
+      }
+      `,
       errorPolicy: 'all',
-      // TODO: make poll interval dependent on api refresh rate.
-      pollInterval: 5 * 60 * 1000, // Refresh every 5 minutes
+      pollInterval() {
+        if (!this.mcServers) {
+          return 60 * 1000;
+        }
+        // Adapt poll interval according to smallest status update rate.
+        return this.mcServers.reduce((minInterval, server) => {
+          if (minInterval === null || server.statusPollInterval < minInterval) {
+            return server.statusPollInterval;
+          }
+          return minInterval;
+        }, null) * 1000;
+      },
     },
   },
 };
