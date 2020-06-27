@@ -8,6 +8,12 @@
             data. Reload page to try again.
           </v-alert>
           <ServerList v-if="mcServers" :servers="mcServers"></ServerList>
+          <footer class="mt-3">
+            <v-icon dense class="mx-2" @click="$apollo.queries.mcServers.refetch()">
+              mdi-refresh
+            </v-icon>
+            Live data - Updating every {{pollInterval / 1000}} seconds.
+          </footer>
         </v-card-text>
       </v-card>
     </v-row>
@@ -24,6 +30,20 @@ export default {
   data: () => ({
     mcServers: null,
   }),
+  computed: {
+    pollInterval() {
+      if (!this.mcServers) {
+        return 60 * 1000;
+      }
+      // Adapt poll interval according to smallest status update rate.
+      return this.mcServers.reduce((minInterval, server) => {
+        if (minInterval === null || server.statusPollInterval < minInterval) {
+          return server.statusPollInterval;
+        }
+        return minInterval;
+      }, null) * 1000;
+    },
+  },
   apollo: {
     mcServers: {
       query: gql`query {
@@ -47,16 +67,7 @@ export default {
       `,
       errorPolicy: 'all',
       pollInterval() {
-        if (!this.mcServers) {
-          return 60 * 1000;
-        }
-        // Adapt poll interval according to smallest status update rate.
-        return this.mcServers.reduce((minInterval, server) => {
-          if (minInterval === null || server.statusPollInterval < minInterval) {
-            return server.statusPollInterval;
-          }
-          return minInterval;
-        }, null) * 1000;
+        return this.pollInterval;
       },
     },
   },
