@@ -5,11 +5,7 @@
         <ServerListItem
           v-for="server in servers"
           :key="server.id"
-          :id="server.id"
-          :name="server.name"
-          :version="server.version"
-          :public-address="server.publicAddress"
-          :status="server.status"
+          :server="server"
         >
         </ServerListItem>
     </v-expansion-panels>
