@@ -50,7 +50,7 @@ export default {
         mcServers {
           id
           name
-          publicAddress
+          address
           version
           statusPollInterval
           status {

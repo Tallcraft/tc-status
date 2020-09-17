@@ -8,7 +8,7 @@
           </v-list-item-icon>
           <v-list-item-content>
             <b>Address</b>
-            {{mcServer.publicAddress}}
+            {{mcServer.address}}
           </v-list-item-content>
         </v-list-item>
         <v-list-item>
