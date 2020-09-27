@@ -1,5 +1,5 @@
 <template>
-  <span :class="indicatorClass"></span>
+  <span :class="indicatorClass" :title="tooltip"></span>
 </template>
 
 <script>
@@ -7,6 +7,18 @@ export default {
   name: 'OnlineIndicator',
   props: {
     onlineStatus: {},
+    tooltipOnline: {
+      type: String,
+      default: 'Online',
+    },
+    tooltipOffline: {
+      type: String,
+      default: 'Offline',
+    },
+    tooltipUnknown: {
+      type: String,
+      default: 'Unknown',
+    },
   },
   computed: {
     indicatorClass() {
@@ -15,6 +27,15 @@ export default {
         online: this.onlineStatus === true,
         offline: this.onlineStatus === false,
       };
+    },
+    tooltip() {
+      if (this.onlineStatus === true) {
+        return this.tooltipOnline;
+      }
+      if (this.onlineStatus === false) {
+        return this.tooltipOffline;
+      }
+      return this.tooltipUnknown;
     },
   },
 };
