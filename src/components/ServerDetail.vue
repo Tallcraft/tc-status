@@ -2,7 +2,7 @@
   <div>
     <v-list>
       <v-list-item-group>
-        <v-list-item @click="copyServerAddress">
+        <v-list-item @click="copyServerAddress" title="Click to copy">
           <v-list-item-icon>
             <v-icon>mdi-controller-classic-outline</v-icon>
           </v-list-item-icon>
@@ -64,7 +64,7 @@ export default {
         console.warn('Cannot copy server address to clipboard, browser does not support it.');
         return;
       }
-      navigator.clipboard.writeText(this.mcServer.publicAddress);
+      navigator.clipboard.writeText(this.mcServer.address);
     },
   },
   computed: {
