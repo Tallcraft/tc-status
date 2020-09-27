@@ -21,7 +21,7 @@
           </v-list-item-content>
         </v-list-item>
         <!-- TODO: remove serverId exception once API bug is fixed -->
-        <v-list-item v-if="mcServer.id !== 'global'">
+        <v-list-item v-if="mcServer.id !== 'global' && onlinePlayerList">
           <v-list-item-icon>
             <v-icon>mdi-account-multiple-outline</v-icon>
           </v-list-item-icon>
@@ -73,7 +73,10 @@ export default {
     },
     // TODO: We should return null and hide the player counter if the onlinePlayers field is null.
     onlinePlayerList() {
-      if (!this.mcServer?.status?.onlinePlayers?.length) {
+      if (!this.mcServer?.status.isOnline) {
+        return null;
+      }
+      if (!this.mcServer.status.onlinePlayers?.length) {
         return 'No online players';
       }
       return this.mcServer.status.onlinePlayers.reduce((acc, player) => {

@@ -1,7 +1,8 @@
 <template>
-  <v-expansion-panel :disabled="hideServerInfo">
+  <v-expansion-panel>
     <v-expansion-panel-header class="justify-space-between flex-wrap">
-      <OnlineIndicator class="flex-grow-0 pr-4" :online-status="server.status.isOnline"></OnlineIndicator>
+      <OnlineIndicator class="flex-grow-0 pr-4" :online-status="server.status.isOnline">
+      </OnlineIndicator>
       <h4>{{server.name}}</h4>
       <v-spacer></v-spacer>
       <v-chip class="flex-grow-0 playerCounter mr-4">
@@ -30,9 +31,6 @@ export default {
     },
   },
   computed: {
-    hideServerInfo() {
-      return this.server.status?.isOnline === false;
-    },
     playerCount() {
       let current = this.server.status?.onlinePlayerCount;
       let max = this.server.status?.maxPlayerCount;
